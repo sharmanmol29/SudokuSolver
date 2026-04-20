@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>SudokuViz - Backtracking Visualizer</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Space+Mono:wght@400;700&family=Syne:wght@500;700;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body data-theme="dark">
+  <canvas id="confetti-canvas" aria-hidden="true"></canvas>
+
+  <header class="navbar glass-panel">
+    <div class="brand">
+      <h1>SudokuViz</h1>
+      <p>Backtracking Algorithm Visualizer</p>
+    </div>
+    <button id="theme-toggle" class="icon-btn" type="button" aria-label="Toggle theme">🌗 Theme</button>
+  </header>
+
+  <main class="app-layout">
+    <aside class="panel left-panel glass-panel">
+      <section class="difficulty-section">
+        <h2>Difficulty</h2>
+        <div class="difficulty-toggle" role="group" aria-label="Difficulty selector">
+          <button class="difficulty-btn active" data-difficulty="easy" type="button">Easy</button>
+          <button class="difficulty-btn" data-difficulty="medium" type="button">Medium</button>
+          <button class="difficulty-btn" data-difficulty="hard" type="button">Hard</button>
+        </div>
+      </section>
+
+      <section class="speed-section">
+        <div class="speed-head">
+          <h2>Visual Speed</h2>
+          <span id="speed-label">Medium</span>
+        </div>
+        <input id="speed-slider" type="range" min="1" max="100" value="50" aria-label="Visualization speed">
+      </section>
+
+      <section class="controls-section">
+        <h2>Controls</h2>
+        <div class="controls-row">
+          <button id="generate-btn" type="button">🎲 Generate Puzzle</button>
+          <button id="example-btn" type="button">📋 Load Example</button>
+          <button id="reset-btn" type="button">🔄 Reset Puzzle</button>
+          <button id="clear-btn" type="button">🗑️ Clear Board</button>
+        </div>
+        <div class="controls-row">
+          <button id="solve-btn" type="button">⚡ Solve Instantly</button>
+          <button id="visual-btn" type="button">▶ Visual Solve</button>
+          <button id="pause-btn" type="button" disabled>⏸ Pause</button>
+          <button id="resume-btn" type="button" disabled>▶️ Resume</button>
+          <button id="next-btn" type="button" disabled>⏭ Next Step</button>
+          <button id="stop-btn" type="button" disabled>⏹ Stop</button>
+        </div>
+        <div class="controls-row">
+          <button id="hint-btn" type="button">💡 Hint</button>
+          <button id="check-btn" type="button">✅ Check Solution</button>
+        </div>
+      </section>
+    </aside>
+
+    <section class="board-panel glass-panel">
+      <div class="board-header">
+        <h2>Interactive Sudoku Board</h2>
+        <span id="example-label">Puzzle: Generated</span>
+      </div>
+      <div id="board" class="board" aria-label="Sudoku board"></div>
+    </section>
+
+    <aside class="panel right-panel glass-panel">
+      <section class="stats-section">
+        <h2>Live Stats</h2>
+        <div class="stats-grid">
+          <div class="stat-item"><span>📊 Total Steps</span><strong id="stat-total-steps">0</strong></div>
+          <div class="stat-item"><span>🔢 Numbers Tried</span><strong id="stat-tried">0</strong></div>
+          <div class="stat-item"><span>↩️ Backtracks</span><strong id="stat-backtracks">0</strong></div>
+          <div class="stat-item"><span>⬜ Empty Cells</span><strong id="stat-empty">81</strong></div>
+          <div class="stat-item"><span>⏱️ Solve Time</span><strong id="stat-time">00:00.000</strong></div>
+          <div class="stat-item"><span>📐 Recursion Depth</span><strong id="stat-depth">0</strong></div>
+          <div class="stat-item full-width"><span>🔄 Status</span><strong id="stat-status">Idle</strong></div>
+        </div>
+      </section>
+
+      <section class="education-section">
+        <button id="education-toggle" class="accordion-toggle" type="button" aria-expanded="false">
+          📚 Learn the Algorithm
+        </button>
+        <div id="education-content" class="accordion-content">
+          <article class="edu-card">
+            <h3>1) What is Backtracking?</h3>
+            <p>Backtracking is a depth-first search method that tries a choice, moves forward if valid, and returns to undo that choice when it reaches a dead end. Think of solving a maze: you follow one path, and if it is blocked, you walk back to the last junction and try a new route.</p>
+          </article>
+          <article class="edu-card">
+            <h3>2) How the Sudoku Solver Works</h3>
+            <p>The solver scans for an empty cell, tests numbers 1 through 9, and places one only if it does not violate row, column, or 3x3 box constraints. It then recurses to solve the next empty cell.</p>
+            <pre><code>solve(board):
+  empty = findEmpty(board)
+  if not empty: return true
+  row, col = empty
+  for num in 1..9:
+    if isValid(board, row, col, num):
+      board[row][col] = num
+      if solve(board): return true
+      board[row][col] = 0
+  return false</code></pre>
+          </article>
+          <article class="edu-card">
+            <h3>3) Why This is a DAA Project</h3>
+            <p>Sudoku is a classic constraint satisfaction problem where each assignment must satisfy strict rules. Generalized Sudoku belongs to NP-complete classes, and this project demonstrates algorithm design through recursion, pruning invalid branches early, and systematic search.</p>
+          </article>
+          <article class="edu-card">
+            <h3>4) Complexity Analysis</h3>
+            <p><strong>Time:</strong> O(9^m), where m is the number of empty cells, since each cell can branch up to 9 possibilities in the worst case.</p>
+            <p><strong>Space:</strong> O(m), due to recursion stack depth.</p>
+            <p><strong>Best case:</strong> heavily constrained puzzle with aggressive pruning.<br><strong>Average case:</strong> moderate branching with frequent dead-end cuts.<br><strong>Worst case:</strong> many empties with late conflicts requiring deep exploration.</p>
+          </article>
+        </div>
+      </section>
+    </aside>
+  </main>
+
+  <footer class="footer glass-panel">
+    <p>Algorithm: Recursive Backtracking with constraint validation and unique-solution puzzle generation.</p>
+  </footer>
+
+  <div id="toast-container" class="toast-container" aria-live="polite" aria-atomic="true"></div>
+
+  <div id="success-modal" class="modal" role="dialog" aria-modal="true" aria-labelledby="modal-title">
+    <div class="modal-content glass-panel">
+      <h2 id="modal-title">🎉 Puzzle Solved!</h2>
+      <p id="modal-summary"></p>
+      <div class="modal-actions">
+        <button id="modal-new-puzzle" type="button">New Puzzle</button>
+        <button id="modal-close" type="button">Close</button>
+      </div>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
