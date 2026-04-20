@@ -129,13 +129,6 @@ For visualization, the same recursion collects action steps (`try`, `place`, `ba
 - **Conflict cells:** red border + underline + shake
 - **Solved sequence:** green ripple/wave across board
 
-## Screenshots
-
-- Add screenshot of the full desktop dashboard layout here.
-- Add screenshot of active visual solving (try/place/backtrack colors).
-- Add screenshot of solved modal + confetti sequence.
-- Add screenshot of mobile responsive layout.
-
 ## Future Enhancements
 
 - MRV/heuristic-based solving mode for faster branch selection.
@@ -147,5 +140,5 @@ For visualization, the same recursion collects action steps (`try`, `place`, `ba
 
 ## Author / License
 
-Author: SudokuViz Project Demo Build  
-License: MIT (you can add a standalone LICENSE file if needed)
+Author: Anmol Sharma
+License: MIT
